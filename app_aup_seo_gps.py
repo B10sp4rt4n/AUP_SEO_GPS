@@ -105,15 +105,20 @@ def recomendaciones_ia(row):
 
     Responde solo con viñetas claras y directas.
     """
-    openai.api_key = os.getenv("OPENAI_API_KEY")
-    response = openai.ChatCompletion.create(
+    # Obtener la API key desde st.session_state
+    api_key = st.session_state.get("openai_api_key")
+    if not api_key:
+        st.error("Debes ingresar tu OpenAI API Key en la barra lateral.")
+        return "[Falta OpenAI API Key]"
+    client = openai.OpenAI(api_key=api_key)
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "system", "content": "Eres un consultor técnico experto."},
                   {"role": "user", "content": prompt}],
         max_tokens=300,
         temperature=0.2
     )
-    return response["choices"][0]["message"]["content"]
+    return response.choices[0].message.content
 
 def generar_recomendaciones(dns_row):
     recs = []
@@ -148,11 +153,18 @@ with st.sidebar:
     spf_flag = st.checkbox("SPF correcto", value=True)
     dmarc_flag = st.checkbox("DMARC publicado", value=False)
 
+
     st.markdown("---")
     st.header("Impactos relativos por ruta")
     impact_dns = st.slider("Impacto DNS", 0.0, 1.0, 0.10, 0.01)
     impact_cwv = st.slider("Impacto Core Web Vitals", 0.0, 1.0, 0.18, 0.01)
     impact_content = st.slider("Impacto Contenido/Cluster", 0.0, 1.0, 0.22, 0.01)
+
+    st.markdown("---")
+    st.header("🔑 OpenAI API Key")
+    openai_api_key = st.text_input("Introduce tu OpenAI API Key", type="password", key="openai_api_key")
+    if openai_api_key:
+        st.session_state["openai_api_key"] = openai_api_key
 
 # -----------------------------
 # Sectores y playbooks
