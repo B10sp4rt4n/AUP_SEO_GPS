@@ -1,0 +1,9 @@
+streamlit
+numpy
+pandas
+requests
+dnspython
+networkx
+matplotlib
+openai
+python-dotenv
