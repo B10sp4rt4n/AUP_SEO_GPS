@@ -163,8 +163,6 @@ with st.sidebar:
     st.markdown("---")
     st.header("🔑 OpenAI API Key")
     openai_api_key = st.text_input("Introduce tu OpenAI API Key", type="password", key="openai_api_key")
-    if openai_api_key:
-        st.session_state["openai_api_key"] = openai_api_key
 
 # -----------------------------
 # Sectores y playbooks
